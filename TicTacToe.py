@@ -8,7 +8,30 @@ class TicTacToe:
         self.array = [['_' for _ in range(3)] for _ in range(3)] #empty array [ [ _ , _ , _], [ _ , _ , _], [ _ , _ , _] ]
         self.letter = 'X'
         self.gameWon = False
-        self.gameDraw = True
+        self.gameDraw = False
+
+    def createBoard(self):
+            self.window = tk.Tk()
+            self.window.geometry(str(self.width)+'x'+str(self.height))
+            self.window.grid()
+            self.window.title("Tic-Tac-Toe")
+
+            #Create empty board
+            self.canvas = tk.Canvas(self.window, width = self.width, height = self.height)
+            self.canvas.create_line(self.width/3, 0, self.width/3, self.height)
+            self.canvas.create_line(self.width/3*2, 0, self.width/3*2, self.height)
+            self.canvas.create_line(0, self.height/3, self.width, self.height/3)
+            self.canvas.create_line(0, self.height/3*2, self.width, self.height/3*2)
+
+            self.window.bind('<Button-1>', self.mouseClick)
+
+            self.canvas.pack()
+            #Create grid 3*3
+            #self.window.columnconfigure(3, 1)
+            #self.window.rowconfigure(3, 1)
+
+    def createMenu(self):
+        pass
 
     def mouseClick(self, event):
         print(f"x : {event.x}, y : {event.y}")
@@ -22,26 +45,6 @@ class TicTacToe:
             if self.letter == 'X' : self.letter = 'O'
             else : self.letter = 'X'
         #return event.x//100, event.y//100    
-    
-    def createBoard(self):
-        self.window = tk.Tk()
-        self.window.geometry(str(self.width)+'x'+str(self.height))
-        self.window.grid()
-        self.window.title("Tic-Tac-Toe")
-
-        #Create empty board
-        self.canvas = tk.Canvas(self.window, width = self.width, height = self.height)
-        self.canvas.create_line(self.width/3, 0, self.width/3, self.height)
-        self.canvas.create_line(self.width/3*2, 0, self.width/3*2, self.height)
-        self.canvas.create_line(0, self.height/3, self.width, self.height/3)
-        self.canvas.create_line(0, self.height/3*2, self.width, self.height/3*2)
-
-        self.window.bind('<Button-1>', self.mouseClick)
-
-        self.canvas.pack()
-        #Create grid 3*3
-        #self.window.columnconfigure(3, 1)
-        #self.window.rowconfigure(3, 1)
 
     def drawFullBoard(self):
         for i in range(3):
@@ -70,9 +73,9 @@ class TicTacToe:
                 break
         if winnerFound : return True
 
-        winnerFound = True
-        #lines
+        #columns
         for i in range(3):
+            winnerFound = True
             for j in range(3):
                 if self.array[i][j] != self.letter:
                     winnerFound = False
@@ -80,8 +83,9 @@ class TicTacToe:
             if winnerFound : return True
 
         winnerFound = True
-        #columns
+        #lines
         for j in range(3):
+            winnerFound = True
             for i in range(3):
                 if self.array[i][j] != self.letter:
                     winnerFound = False
@@ -109,14 +113,8 @@ class TicTacToe:
     def GameOver(self):
 
         self.window.unbind("<Button-1>")
-        #self.canvas.delete('all')
         self.canvas.destroy()
-        """
-        text = tk.Text(self.window, text = "It's a draw!")
-        text.place(x = 50, y = 50)
-        text.pack()
-        text.config(state = 'disabled')
-        """
+        
         text = tk.Label(self.window, anchor = 'center', fg = 'white', text = "Game is over!", width = len("Game is over!"))
         text.pack()
         text.place(x = self.width//3, y = self.height//3)
@@ -124,6 +122,8 @@ class TicTacToe:
         startAgainButton = tk.Button(self.window, text = 'Start Again')
         startAgainButton.pack()
         startAgainButton.place(x = self.width//3, y = self.height//3+30)
+
+        
 
 game = TicTacToe()
 game.createBoard()
