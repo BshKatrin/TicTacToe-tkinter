@@ -1,5 +1,6 @@
 
 import tkinter as tk
+from sys import exit
 
 class TicTacToe:
     def __init__(self):
@@ -9,13 +10,20 @@ class TicTacToe:
         self.letter = 'X'
         self.gameWon = False
         self.gameDraw = False
+        self.gameExit = False
+
+        self.window = tk.Tk()
+        self.window.geometry(str(self.width)+'x'+str(self.height))
+        self.window.grid()
+        self.window.title("Tic-Tac-Toe")
+
+    def quit(self):
+        self.window.destroy()
+        self.gameExit = True
+        exit(0)
 
     def createBoard(self):
-            self.window = tk.Tk()
-            self.window.geometry(str(self.width)+'x'+str(self.height))
-            self.window.grid()
-            self.window.title("Tic-Tac-Toe")
-
+            
             #Create empty board
             self.canvas = tk.Canvas(self.window, width = self.width, height = self.height)
             self.canvas.create_line(self.width/3, 0, self.width/3, self.height)
@@ -31,7 +39,63 @@ class TicTacToe:
             #self.window.rowconfigure(3, 1)
 
     def createMenu(self):
-        pass
+        
+        self.window.columnconfigure(0, weight=1)
+        self.window.columnconfigure(1, weight=1)
+        self.window.columnconfigure(2, weight=1)
+        self.window.rowconfigure(0, weight=1)
+        self.window.rowconfigure(1, weight=1)
+        self.window.rowconfigure(2, weight=1)
+
+
+        self.textFrame = tk.Frame(self.window, width=self.width//3, height=self.height//3)
+        self.textFrame.grid(row = 0, column=1)
+
+        
+        text = tk.Label(self.textFrame, text = "MENU")
+        text.pack()
+
+        self.buttonFrame = tk.Frame(self.window, width=self.width//3, height=self.height//3)
+        self.buttonFrame.grid(row=1, column=1)  
+        
+        startButton = tk.Button(self.buttonFrame, text = "Play")
+        startButton.pack(side=tk.TOP)
+        startButton.bind('<Button-1>', self.startGame)
+
+        exitButton = tk.Button(self.buttonFrame, text = "Exit", command = self.quit)
+        exitButton.pack(side=tk.BOTTOM)
+        
+        """
+        text = tk.Label(self.menuFrame, text = "MENU", fg = "white", anchor = 'center', width = len("MENU")).grid()
+        #text.grid(row = 0, column=1)
+        #text.pack()
+        #text.place(x = self.width//3, y = self.height//3-30)
+
+        startButton = tk.Button(self.menuFrame, text = "Play")
+        #startButton.grid(row = 1, column = 1)
+        #startButton.pack()
+        startButton.bind("<Button-1>", self.startGame)
+        startButton.grid()
+
+        exitButton = tk.Button(self.menuFrame, text = "Exit", command = self.quit).grid()
+        #exitButton.grid(row = 1, column=1, sticky='S')
+        #exitButton.bind("<Button-1>", quit)
+
+        self.menuFrame.columnconfigure(0, weight=1)
+        self.menuFrame.columnconfigure(1, weight=1)
+        self.menuFrame.columnconfigure(2, weight=1)
+        self.menuFrame.rowconfigure(0, weight=1)
+        self.menuFrame.rowconfigure(1, weight=1)
+        self.menuFrame.rowconfigure(2, weight=1)
+        """
+        
+    def startGame(self, event):
+        self.textFrame.destroy()
+        self.buttonFrame.destroy()
+        
+        self.drawFullBoard()
+        
+        self.window.mainloop()
 
     def mouseClick(self, event):
         print(f"x : {event.x}, y : {event.y}")
@@ -123,11 +187,13 @@ class TicTacToe:
         startAgainButton.pack()
         startAgainButton.place(x = self.width//3, y = self.height//3+30)
 
-        
+
 
 game = TicTacToe()
-game.createBoard()
+game.createMenu()
 
+game.window.mainloop()
+"""
 while (not game.gameWon) and (not game.gameDraw):
     game.drawFullBoard()
     #game.printArray()
@@ -137,5 +203,7 @@ while (not game.gameWon) and (not game.gameDraw):
 
 if game.gameDraw or game.gameWon: 
     game.GameOver()
-
-game.window.mainloop()
+if game.gameExit : exit()
+#game.window.mainloop()
+#game.self.quit()
+"""
