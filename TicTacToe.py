@@ -17,6 +17,18 @@ class TicTacToe:
         self.window.grid()
         self.window.title("Tic-Tac-Toe")
 
+        self.canvas = tk.Canvas(self.window, width = self.width, height = self.height)
+        
+
+    def drawFullBoard(self):
+        for i in range(3):
+            for j in range(3):
+                if self.array[i][j] == 'O':
+                    self.canvas.create_oval(100*j+20, 100*i+20, 100*(j+1)-20, 100*(i+1)-20)
+                elif self.array[i][j] == 'X':
+                    self.canvas.create_line(100*j+20, 100*i+20, 100*(j+1)-20, 100*(i+1)-20)
+                    self.canvas.create_line(100*(j+1)-20, 100*i+20, 100*j+20, 100*(i+1)-20)
+
     def quit(self):
         self.window.destroy()
         self.gameExit = True
@@ -25,13 +37,12 @@ class TicTacToe:
     def createBoard(self):
             
             #Create empty board
-            self.canvas = tk.Canvas(self.window, width = self.width, height = self.height)
             self.canvas.create_line(self.width/3, 0, self.width/3, self.height)
             self.canvas.create_line(self.width/3*2, 0, self.width/3*2, self.height)
             self.canvas.create_line(0, self.height/3, self.width, self.height/3)
             self.canvas.create_line(0, self.height/3*2, self.width, self.height/3*2)
 
-            self.window.bind('<Button-1>', self.mouseClick)
+            
 
             self.canvas.pack()
             #Create grid 3*3
@@ -47,11 +58,9 @@ class TicTacToe:
         self.window.rowconfigure(1, weight=1)
         self.window.rowconfigure(2, weight=1)
 
-
         self.textFrame = tk.Frame(self.window, width=self.width//3, height=self.height//3)
         self.textFrame.grid(row = 0, column=1)
 
-        
         text = tk.Label(self.textFrame, text = "MENU")
         text.pack()
 
@@ -65,37 +74,27 @@ class TicTacToe:
         exitButton = tk.Button(self.buttonFrame, text = "Exit", command = self.quit)
         exitButton.pack(side=tk.BOTTOM)
         
-        """
-        text = tk.Label(self.menuFrame, text = "MENU", fg = "white", anchor = 'center', width = len("MENU")).grid()
-        #text.grid(row = 0, column=1)
-        #text.pack()
-        #text.place(x = self.width//3, y = self.height//3-30)
 
-        startButton = tk.Button(self.menuFrame, text = "Play")
-        #startButton.grid(row = 1, column = 1)
-        #startButton.pack()
-        startButton.bind("<Button-1>", self.startGame)
-        startButton.grid()
-
-        exitButton = tk.Button(self.menuFrame, text = "Exit", command = self.quit).grid()
-        #exitButton.grid(row = 1, column=1, sticky='S')
-        #exitButton.bind("<Button-1>", quit)
-
-        self.menuFrame.columnconfigure(0, weight=1)
-        self.menuFrame.columnconfigure(1, weight=1)
-        self.menuFrame.columnconfigure(2, weight=1)
-        self.menuFrame.rowconfigure(0, weight=1)
-        self.menuFrame.rowconfigure(1, weight=1)
-        self.menuFrame.rowconfigure(2, weight=1)
-        """
-        
     def startGame(self, event):
         self.textFrame.destroy()
         self.buttonFrame.destroy()
+
+        self.window.bind('<Button-1>', self.mouseClick)
+
+        self.createBoard()
+        while (not self.gameDraw) and (not self.gameWon):
+            self.canvas.delete('all')
+            self.drawFullBoard()
+            self.createBoard()
+            #self.drawFullBoard()
+            self.window.update()
+            self.window.update_idletasks()
+            print(f"game is won : {self.gameWon}, draw : {self.gameDraw}")
+            self.printArray()
         
         self.drawFullBoard()
-        
-        self.window.mainloop()
+    
+        self.window.unbind('<Button-1>')
 
     def mouseClick(self, event):
         print(f"x : {event.x}, y : {event.y}")
@@ -109,16 +108,8 @@ class TicTacToe:
             if self.letter == 'X' : self.letter = 'O'
             else : self.letter = 'X'
         #return event.x//100, event.y//100    
-
-    def drawFullBoard(self):
-        for i in range(3):
-            for j in range(3):
-                if self.array[i][j] == 'O':
-                    self.canvas.create_oval(100*j+20, 100*i+20, 100*(j+1)-20, 100*(i+1)-20)
-                elif self.array[i][j] == 'X':
-                    self.canvas.create_line(100*j+20, 100*i+20, 100*(j+1)-20, 100*(i+1)-20)
-                    self.canvas.create_line(100*(j+1)-20, 100*i+20, 100*j+20, 100*(i+1)-20)
-
+        return "break" # check this one. Read docs on .bind and .unbind
+    
     def printArray(self):
         for i in range(3):
             for j in range(3):
@@ -191,6 +182,7 @@ class TicTacToe:
 
 game = TicTacToe()
 game.createMenu()
+
 
 game.window.mainloop()
 """
